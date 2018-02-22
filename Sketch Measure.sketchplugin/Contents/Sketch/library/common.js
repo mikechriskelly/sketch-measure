@@ -324,7 +324,7 @@ SM.extend({
                             "b:" + (Math.round(color.blue() * 100) / 100).toFixed(2),
                             "a:" + (Math.round(color.alpha() * 100) / 100).toFixed(2)
                         ].join(" ") + ")",
-            "color-var": colorVar
+            "color-var": colorVar || "(unspecified)"
         };
     },
     colorStopToJSON: function(colorStop) {
@@ -360,7 +360,7 @@ SM.extend({
     getRadius: function(layer){
         return ( layer.layers && this.is(layer.layers().firstObject(), MSRectangleShape) ) ? layer.layers().firstObject().fixedRadius(): 0;
     },
-    getBorders: function(style) {
+    getBorders: function(style, layer) {
         var bordersData = [],
             border, borderIter = style.borders().objectEnumerator();
         while (border = borderIter.nextObject()) {
@@ -374,7 +374,10 @@ SM.extend({
 
                 switch (fillType) {
                     case "color":
-                        borderData.color = this.colorToJSON(border.color());
+                        borderData.colorVar = layer ?
+                            this.toJSString(this.command.valueForKey_onLayer_forPluginIdentifier('oco_defines_border', layer, 'tools.opencolor.sketch.opencolor')) :
+                            '';
+                        borderData.color = this.colorToJSON(border.color(), borderData.colorVar);
                         break;
 
                     case "gradient":
@@ -391,7 +394,7 @@ SM.extend({
 
         return bordersData;
     },
-    getFills: function(style) {
+    getFills: function(style, layer) {
         var fillsData = [],
             fill, fillIter = style.fills().objectEnumerator();
         while (fill = fillIter.nextObject()) {
@@ -403,7 +406,10 @@ SM.extend({
 
                 switch (fillType) {
                     case "color":
-                        fillData.color = this.colorToJSON(fill.color());
+                        fillData.colorVar = layer ?
+                            this.toJSString(this.command.valueForKey_onLayer_forPluginIdentifier('oco_defines_fill', layer, 'tools.opencolor.sketch.opencolor')) :
+                            '';
+                        fillData.color = this.colorToJSON(fill.color(), fillData.colorVar);
                         break;
 
                     case "gradient":
@@ -3124,8 +3130,8 @@ SM.extend({
             var layerStyle = layer.style();
             layerData.rotation = layer.rotation();
             layerData.radius = this.getRadius(layer);
-            layerData.borders = this.getBorders(layerStyle);
-            layerData.fills = this.getFills(layerStyle);
+            layerData.borders = this.getBorders(layerStyle, layer);
+            layerData.fills = this.getFills(layerStyle, layer);
             layerData.shadows = this.getShadows(layerStyle);
             layerData.opacity = this.getOpacity(layerStyle);
             layerData.styleName = this.getStyleName(layer);
