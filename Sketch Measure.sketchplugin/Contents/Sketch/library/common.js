@@ -304,7 +304,7 @@ SM.extend({
             height: Math.round( rect.height() * 10 ) / 10
         };
     },
-    colorToJSON: function(color) {
+    colorToJSON: function(color, colorVar) {
         return {
             r: Math.round(color.red() * 255),
             g: Math.round(color.green() * 255),
@@ -323,7 +323,8 @@ SM.extend({
                             "g:" + (Math.round(color.green() * 100) / 100).toFixed(2),
                             "b:" + (Math.round(color.blue() * 100) / 100).toFixed(2),
                             "a:" + (Math.round(color.alpha() * 100) / 100).toFixed(2)
-                        ].join(" ") + ")"
+                        ].join(" ") + ")",
+            "color-var": colorVar
         };
     },
     colorStopToJSON: function(colorStop) {
@@ -3131,8 +3132,11 @@ SM.extend({
         }
 
         if ( layerType == "text" ) {
+
+            layerData.colorVar = this.toJSString(this.command.valueForKey_onLayer_forPluginIdentifier('oco_defines_text', layer, 'tools.opencolor.sketch.opencolor'));
+
             layerData.content = this.toHTMLEncode(this.emojiToEntities(layer.stringValue()));
-            layerData.color = this.colorToJSON(layer.textColor());
+            layerData.color = this.colorToJSON(layer.textColor(), layerData.colorVar);
             layerData.fontSize = layer.fontSize();
             layerData.fontFace = this.toJSString(layer.fontPostscriptName());
             layerData.textAlign = TextAligns[layer.textAlignment()];
