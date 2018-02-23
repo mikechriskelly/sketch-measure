@@ -375,7 +375,7 @@ SM.extend({
                 switch (fillType) {
                     case "color":
                         borderData.colorVar = layer ?
-                            this.toJSString(this.command.valueForKey_onLayer_forPluginIdentifier('oco_defines_border', layer, 'tools.opencolor.sketch.opencolor')) :
+                            this.toJSString(this.command.valueForKey_onLayer_forPluginIdentifier('oco_defines_border', layer, 'tools.opencolor.sketch.opencolor')).replace(/[^.]*\.(.*)/, '$1'):
                             '';
                         borderData.color = this.colorToJSON(border.color(), borderData.colorVar);
                         break;
@@ -407,7 +407,7 @@ SM.extend({
                 switch (fillType) {
                     case "color":
                         fillData.colorVar = layer ?
-                            this.toJSString(this.command.valueForKey_onLayer_forPluginIdentifier('oco_defines_fill', layer, 'tools.opencolor.sketch.opencolor')) :
+                            this.toJSString(this.command.valueForKey_onLayer_forPluginIdentifier('oco_defines_fill', layer, 'tools.opencolor.sketch.opencolor')).replace(/[^.]*\.(.*)/, '$1') :
                             '';
                         fillData.color = this.colorToJSON(fill.color(), fillData.colorVar);
                         break;
@@ -3139,7 +3139,7 @@ SM.extend({
 
         if ( layerType == "text" ) {
 
-            layerData.colorVar = this.toJSString(this.command.valueForKey_onLayer_forPluginIdentifier('oco_defines_text', layer, 'tools.opencolor.sketch.opencolor'));
+            layerData.colorVar = this.toJSString(this.command.valueForKey_onLayer_forPluginIdentifier('oco_defines_text', layer, 'tools.opencolor.sketch.opencolor')).replace(/[^.]*\.(.*)/, '$1');
 
             layerData.content = this.toHTMLEncode(this.emojiToEntities(layer.stringValue()));
             layerData.color = this.colorToJSON(layer.textColor(), layerData.colorVar);
